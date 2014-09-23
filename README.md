@@ -22,7 +22,7 @@ Next, run _one_ of the following commands, depending on which application you wa
 ```
 ruby bake-app.rb -p $PORT -o $IP
 ruby message-app.rb -p $PORT -o $IP
-ruby bake-app.rb -p $PORT -o $IP
+ruby wall-app.rb -p $PORT -o $IP
 ```
 
 To stop your application, press `Ctrl+c`.  That's "Control" plus the "c" key.
