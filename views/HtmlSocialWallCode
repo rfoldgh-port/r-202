@@ -1,0 +1,11 @@
+ <div class="message-actions">
+                <form action="/messages/<%= message.id %>/upvote" method="POST">
+                  <strong>Upvotes: <%= message.upvotes %></strong>
+                  <button type="submit">Upvote!</button>
+                </form>
+                <form action="/messages/"
+                  
+                  
+                </form>
+                
+              </div>

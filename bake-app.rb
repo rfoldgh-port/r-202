@@ -36,14 +36,29 @@ end
 get("/bake") do
   count      = Integer(params["count"])
   baked_good = String(params["baked_good"])
+  multiplier = 10
+  result = count * multiplier
 
-  html = "I'm going to bake #{count} #{baked_good}!"
+  html = "I'm going to bake #{count} #{baked_good} #{result} times 10!"
+  mystring1 = "with"
+  mystring2 = "Choc Chips"
 
   html.concat("<ul>")
-  count.times do |num|
-    html.concat("<li>#{baked_good} number #{num}</li>")
+  chip_sum = 0
+  result.times do |num|
+    chips = rand(50)
+    
+    html.concat("<li>#{baked_good} number #{num} #{mystring1} #{chips} #{mystring2}</li>")
+    chip_sum += chips
+    
+    
   end
+  average_chips = chip_sum / result.to_f()
   html.concat("</ul>")
-
+  html.concat("<p>Total Number of Chips is: #{chip_sum}</p>")
+  html.concat("<p>Total Number of Cookies is: #{result}</p>")
+  html.concat("<p>Therefore Average Number of Chips Must Be #{average_chips}</p>")
+  
   body(html)
+  
 end

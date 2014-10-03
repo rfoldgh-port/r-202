@@ -8,10 +8,8 @@ class Message
 
   property :id,         Serial
   property :body,       Text,     required: true
-  property :upvotes,     Integer,  required: true, default: 0
+  property :upvotes,    Integer,  required: true, default: 0
   property :created_at, DateTime, required: true
-  property :datafield,  Text,     required: true, default: "A"
-  property :downvotes, Integer, required: true, default: 0
 end
 
 DataMapper.finalize()
@@ -22,17 +20,34 @@ get("/") do
   erb(:index, locals: { messages: records })
 end
 
-post("/messages/*/upvotes") do |message_id|
-  message = Message.get(messsage.id)
-  message.upvotes = Messsage.upvotes + 1
-  message.downvotes = Message.downvotes - 1
-  
-  if message.save 
+#----------------
+post("/messages/*/upvotes") do
+  message_body = params["body"]
+  message_time = DateTime.now
+
+  message = Message.create(body: message_body, created_at: message_time)
+
+  if message.saved?
     redirect("/")
   else
-    body("Maybe Something went wrong, Maybe Nothing is wrong at all")
-    
+    erb(:error)
   end
+end
+
+post("/messages/*/upvote") do |message_id|
+  message = Message.get(message_id)
+  message.upvotes = message.upvotes + 1
+
+  if message.save
+    redirect("/")
+  else
+    body("Something went terribly wrong!")
+  end
+end
+##############
+get("/") do
+  records = Message.all(order: :created_at.desc)
+  erb(:index, locals: { messages: records })
 end
 
 post("/messages") do
@@ -47,4 +62,3 @@ post("/messages") do
     erb(:error)
   end
 end
-

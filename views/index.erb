@@ -10,7 +10,8 @@
   <body>
     <div id="page">
       <h1>Social Wall</h1>
-      <form id="message-form" method="POST" action="/messages">
+      <form id="message-form" action="/messages/<% = message.id %>/upvote" method ="POST">
+        <strong>Upvotes: <% message.upvotes %></strong>
         <textarea id="message-body" name="body" placeholder="Enter a message here."></textarea>
         <button type="submit">Post Message</button>
       </form>
@@ -26,6 +27,19 @@
               </div>
               <div class="message-timestamp">
                 Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
+                </div>
+                
+                #############
+                <div class="message-actions">
+                <form action="/messages/<%= message.id %>/upvote" method="POST">
+                  <strong>Upvotes: <%= message.upvotes %></strong>
+                  <button type="submit">Upvote!</button>
+                </form>
+                <form action="/messages/"
+                  
+                  
+                </form>
+                
               </div>
             </li>
           <% end %>
