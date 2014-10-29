@@ -1,0 +1,8 @@
+records = Message.all(order: created_at.desc)
+erb(:index, locals: {messages: records
+
+post (/messages)
+
+missionbit.com/operation.peach
+
+http://bit.ly/mbit-1-to-many
