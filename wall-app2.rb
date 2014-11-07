@@ -85,7 +85,7 @@ post("/messages/*/comments") do |message_id|
     commentTypeVar = "This is a so so Comment"
     comment.commentType = commentTypeVar
   
-    image_array2 = entries(public/images)
+    image_array2 = entries("./public/images")
  
   end
 
@@ -94,7 +94,10 @@ post("/messages/*/comments") do |message_id|
 
   responseImage = image_array.shuffle!().first()
   responseImage2 = "./public/images/"
-  responseImage2 += image_array2.shuffle!().first()
+  
+  image_Shuffle = image_array2.shuffle!().first()
+  responseImage2.concat("image_Shuffle")
+  
   comment.responseImage = responseImage
   comment.responseImage2 = responseImage2
  
