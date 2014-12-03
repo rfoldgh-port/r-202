@@ -58,6 +58,10 @@ get("/") do
   records = Message.all(order: :created_at.desc)
   erb(:index2, locals: { messages: records })
 end
+
+get("/test") do
+  body("hello world!")
+end
 ################################################################################ 
 #
 post("/messages") do
@@ -72,6 +76,11 @@ post("/messages") do
     erb(:error)
   end
   end
+################################################################################
+post("/getProject2") do
+  get(Project2.rb)
+end
+
 ################################################################################# 
 post("/messages/*/comments") do |message_id|
   message = Message.get(message_id)
@@ -80,8 +89,8 @@ post("/messages/*/comments") do |message_id|
   comment.body = params[:comment_body]
   comment.created_at = DateTime.now
 
-    type = rand(3)
- 
+    #type = rand(3)
+     type = 3
   if (type == 1) 
     commentTypeVar = "This is a LAME type of Comment and you need to take a CLASS"
     comment.commentType = commentTypeVar
@@ -118,14 +127,21 @@ post("/messages/*/comments") do |message_id|
     chosenResponse = text_Array3.shuffle!().first()
     comment.responseToComment = chosenResponse
     
-    image_Array3 = Dir["/public/images"]
+    image_Array3 = ["http://smileyfaceplace.weebly.com/uploads/6/9/7/1/6971266/6808991_orig.jpg", "http://thumbs.dreamstime.com/z/who-cares-emoticon-asking-what-s-problem-what-i-don-t-know-42424037.jpg", "http://images.sodahead.com/polls/000602317/polls_emoticon_0016_465800_answer_3_xlarge.jpeg"]
     
-    image3_URLPart1 = "./public/images"
+    #image_Array3 = Dir["public/images/*.*"]
+    #image_Array3 = Dir["*.jpg"]
+    
+    image3_URLPart1 = "file://../../"
+    
+    
     image3_URLPart2 = image_Array3.shuffle!().first()
     
-    image3_URLPart1.concat("#{image3_URLPart2}")
+    #image3_URLPart1.concat("#{image3_URLPart2}")
     
-    responseImage = image3_URLPart1
+    responseImage = image3_URLPart2
+    
+    #responseImage = image3_URLPart2
      
   end
 
@@ -140,7 +156,7 @@ post("/messages/*/comments") do |message_id|
   #responseImage2.concat("image_Shuffle")
   
   comment.responseImage = responseImage
-  #comment.responseImage2 = responseImage2
+  comment.responseImage2 = "http://www.delhi.edu/prospective_students/continuing_education/images/takeaclass.jpg"
  
  
   message.comments.push(comment)
