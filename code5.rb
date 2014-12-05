@@ -191,17 +191,48 @@ puts "THIRD METHOD"
 AllH2 = page2.css("h2")
 
 puts "ALL H2s and [0] and [2] element"
-#puts A11H2.all
+puts "all"
+puts AllH2
 ###########################################
-#puts "AllH2.loop"
+###########################################
+puts "AllH2.loop"
+
+#each do format
+
+puts "each do format"
+AllH2.each do |department|
+    
+        #puts "#{department.text}"
+        
+sem_depttext =  "#{department.text}"
+puts "Here is sem_depttext"
+puts sem_depttext
+sdtsplit = sem_depttext.split("_ _")
+#puts sdtsplit
+    
+    
+end
+puts "I in [i] format"
+for i in (0..AllH2.length-1)
+
+sem_depttext2 =  "#{AllH2[i].text}"
+puts "Here is sem_depttext2"
+puts sem_depttext2
+sdtsplit2 = sem_depttext2.split(" ")
+puts sdtsplit2
+#puts "#{AllH2[i].text}"
+
+end
+
 #i = 0
-#  for i in AllH2 do
-#   puts ALLH2[i]
+#  for i in AllH2[0]
+#   puts AllH2[i]
     
 #    i += 1
 #  end
-
-
+  
+puts "ALL H2s and [0] and [2] element"
+#for i=0;i>AllH2.length;++i
 puts AllH2[0].text
 puts AllH2[1].text
 puts AllH2[2].text
@@ -345,12 +376,12 @@ end
  #  attr_reader :name, :artist, :duration
 #end
 aSong1 = Song.new("Cher", "Got you babe", 260)
+puts "#class Song putting aSong1.artist Cher"
 puts aSong1.artist	
-#»	"cher
-puts aSong1.name	
-#»	"got you babe
+puts "#class Song putting aSong1.name Got you"
+puts aSong1.name
+puts "#class Song putting aSong1.duration 260"
 puts aSong1.duration	
-#»	z260
 
 
 class SongList
@@ -384,11 +415,11 @@ def append(aSong)
 end
 
 list = SongList.new
-puts "puttin the songlist"
+puts "puttin the songlist Nothing in it yet"
 testSongList = list
 puts testSongList 
 
-puts "using a string of list appends"
+puts "using a string of list appends no putting yet"
 list.
   append(Song.new('title1', 'artist1', 1)).
   append(Song.new('title2', 'artist2', 2)).
@@ -407,12 +438,12 @@ list.
 #puts "xxnil"
 
 ##########################
+puts "list element 0 is"
 puts list[0]	
-puts "xxxSong: title1--artist1 (1) "
+puts "element [2] xxxSong: title1--artist1 (1) "
 puts list[2]	
-puts "xxxSong: title3--artist3 (3) "
+puts "element [9]xxxSong: title3--artist3 (3) "
 puts list[9]	
-puts "xxxnil"
   
 
 #######################
@@ -461,10 +492,12 @@ values.push(subarray)
 # Load an element.
 puts "Third element in first row is: " << String(values[0][2])
 
-# Change this element.
+puts "Change this element"
+
 values[1][1] = 500
 
-# Display all elements.
+puts "Display all elements"
+
 values.each do |x|
     x.each do |y|
 	puts y
@@ -516,4 +549,60 @@ puts "Here is the Inner Array 2nd element"
 puts SongNEWInstance.InnerArray[1]
 puts "Here is the Inner Array 3rd element"
 puts SongNEWInstance.InnerArray[2]
+
+##################################################
+
+class GetCityCollegeClasses 
+  
+  def getCCSFClassesNokogiri
+    
+    puts "City college section follows"
+    puts "CCSF_Page_Url = https://www.ccsf.edu/Schedule/Fall/computer_science.shtml"
+    @CCSF_Page_Url = "https://www.ccsf.edu/Schedule/Fall/computer_science.shtml"
+ 
+    puts "page2 = Nokogiri::HTML(open(CCSF_Page_Url))"
+    @CCSFPage_Noko = Nokogiri::HTML(open(CCSF_Page_Url))  
+    
+  end
+  
+  def getCCSFNoko_cleqtitle_Category
+ 
+    #puts "puts CCSFPage_Noko.css(title)"
+    #puts CCSFPage_Noko.css('title')
+    #puts "puts CCSFPage_Noko.css('title')[0].name"
+    #puts CCSFPage_Noko.css('title')[0].name
+    #puts "puts CCSFPage_Noko.css('title')[0].text"
+    @titleCatVar = CCSFPage_Noko.css('title')[0].text
+    @titleCatArray = @titleCarVar.split("  ")
+    @Category_VAR = @titleCatArray[0]
+    @Semester_VAR = @titleCatArray[5]
+    
+  end
+  
+  def getCCSFNoko_h2Department
+    
+    @CCSF_Page_Url = "https://www.ccsf.edu/Schedule/Fall/computer_science.shtml"
+    @CCSFPage_Noko = Nokogiri::HTML(open(@CCSF_Page_Url))
+    
+    
+    @h2DeptVar = @CCSFPage_Noko.css('h2').text
+    return @h2DeptVar
+    
+  end
+    
+end
+
+#def getCCSFNoko_spanclcourseTitle_CRNTitle
+  
+#   @CCSF_Page_Url = "https://www.ccsf.edu/Schedule/Fall/computer_science.shtml"
+#   @CCSFPage_Noko = Nokogiri::HTML(open(@CCSF_Page_Url))
+#   @h2DeptVar = @CCSFPage_Noko.css('span').text
+   
+# end 
+
+GCCC_Instance = GetCityCollegeClasses.new
+returnVar = GCCC_Instance.getCCSFNoko_h2Department()
+
+puts returnVar
+
 
