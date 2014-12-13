@@ -12,7 +12,7 @@ require "sinatra/reloader" if development?
 #################################################################################
 class ClassPreference
   include DataMapper::Resource
- 
+  
   property :id,         Serial
   property :body,       Text,     required: true
   property :created_at, DateTime, required: true
@@ -34,7 +34,28 @@ class ClassData
     property :Section, Text
     property :Days, Text 
     property :Time, DateTime
-    proptery :Units, Text 
+    property :Units, Text 
+   
+    
+end
+
+class ClassData_V2
+    include DataMapper::Resource
+    
+    property :Id, Serial
+    property :Institution, Text
+    property :Semester, Text
+    property :Level, Text
+    property :Category, Text
+    property :Department, Text
+    property :ClassNumber, Text
+    property :ClassName, Text
+    property :SectionNumber, Text
+    property :Section, Text
+    property :Days, Text 
+    property :Time, Text
+    property :Units, Text 
+    #property :created_at, DateTime, required: true
     
 end
 
@@ -135,13 +156,17 @@ get("/getclassesmain") do
 ################################################################################
 class GetCityCollegeClasses
   
-  def initialize(collectorarray,collectorhash,collectionofarrays, collectionofhashes)
+  def initialize(collectorarray,collectorhash,collectorhash_symb,collectionofarrays, collectionofhashes)
    
    @collectorarray = collectorarray
    @collectorhash = collectorhash
+   @collectorhash_sym = collectorhash_symb
+   @xcollectionofarrays = collectionofarrays
+   @xcollectionofhashes = collectionofhashes
    
    @collectionofarrays = Array.new
    @collectionofhashes = Array.new
+   @collectionofhashes_symb = Array.new
   
    
   end
@@ -185,17 +210,27 @@ class GetCityCollegeClasses
 
 
   def mymain
+      
+    ClassData_V2.all.destroy
+    #ClassPreference.all.destroy
+    #Message.all.destroy
+    #Comment.all.destroy
     
     class_url = "https://www.ccsf.edu/Schedule/Fall/computer_science.shtml"
     html = Nokogiri::HTML(open(class_url))
     
     @collectorarray0 = Array.new
     @collectorhash0 = Hash.new
+    @collectorhash0_symb = Hash.new
     @test = 1
+    @index = 0
+    @index_2 = 0
+    index_3 = 0
+    @index_4 = 0
     
     html.css("pre").children.each  {|node|
     
-   
+    
     
     #property :id, Serial
     #property :Institution, Text
@@ -213,6 +248,9 @@ class GetCityCollegeClasses
     
      if node.name == "h2"
        
+       puts "index_2 beginning of h2"
+       puts @index_2
+       @index_2 = @index_2 + 1
        semestercategory = node.text
       
        semestercategory.gsub!('l 2','l_2')
@@ -221,17 +259,53 @@ class GetCityCollegeClasses
        semestercategoryinnerarray = semestercategory.split(/\W{5}/)
        #puts semestercategoryinnerarray
        
+       
+       @collectorarray0[1] = "CCSF"
+       @collectorarray0[3] = "Undergrad"
        @collectorarray0[2] = semestercategoryinnerarray[0]
        @collectorarray0[4] = semestercategoryinnerarray[1]
+       @collectorarray0[12] = "3"
        
-       @collectorhash0["Semester"] = semestercategoryinnerarray[0]
-       @collectorhash0["Category"] = semestercategoryinnerarray[1]
+       @collectorhash0["Institution:"] = "CCSF"
+       @collectorhash0["Units:"] = "3"
+       @collectorhash0["Level:"] = "Undergrad"
+       @collectorhash0["Semester:"] = semestercategoryinnerarray[0]
+       @collectorhash0["Category:"] = semestercategoryinnerarray[1]
+       @collectorhash0_symb[:Semester] = semestercategoryinnerarray[0]
+       @collectorhash0_symb[:Category] = semestercategoryinnerarray[1]
+       @collectorhash0_symb[:Institution] = "CCSF"
+       @collectorhash0_symb[:Units] = "3"
+       @collectorhash0_symb[:Level] = "Undergrad"
        
-
-     end
-    
+    end
    
-     if node.name == "span" and node.attr(:class) == "courseTitle"
+     if node.name == "span" and node.attr(:class) == "courseTitle" 
+         
+         puts "value of index_3 beginning of span coursetitle but outside of 
+         collectorarray[1] condition"
+         puts index_3
+         index_3 = index_3 + 1
+         puts index_3
+         
+        # if (@collectorarray0[1] != nil)
+             
+         puts "value of index_4 beginning of span coursetitle bu collectorarray[1] is not nill"
+         puts @index_4
+         @index_4 = @index_4 + 1
+         
+       
+         if (@collectorarray0[1] != nil)
+         @collectorarray00 = @collectorarray0.dup
+         @collectorhash00 = @collectorhash0.dup
+         @collectorhash00_symb = @collectorhash0_symb.dup
+         end
+         puts "here is value of @collectorarray00 beg of span after it is assigned"
+         puts @collectorarray00
+         
+          #@collectorarray00[1] = @collectorarray0[1]
+         
+         #puts "here is value of @collectorarray00[1] beg of span after it is assigned"
+         #puts @collectorarray00[1]
       
       spantestattrib = node.text
       
@@ -240,11 +314,16 @@ class GetCityCollegeClasses
       
       #@collectorarray[6] = spantestattrib[/^\w{5}/]
       
-      @collectorarray0[6] = spantestattrib[0..8]
-      @collectorhash0["ClassNumber"] = spantestattrib[0..8]
+      p "@collectorarray00[1] if we are in span"
+      p @collectorarray00[1]
       
-      @collectorarray0[7] = spantestattrib[11..42]
-      @collectorhash0["ClassName"] = spantestattrib[11..42]
+      @collectorarray00[6] = spantestattrib[0..8]
+      @collectorhash00["ClassNumber:"] = spantestattrib[0..8]
+      @collectorhash00_symb[:ClassNumber] = spantestattrib[0..8]
+      
+      @collectorarray00[7] = spantestattrib[11..42]
+      @collectorhash00["ClassName:"] = spantestattrib[11..42]
+      @collectorhash00_symb[:ClassName] = spantestattrib[11..42]
       
      
       my_match = /CS/.match(spantestattrib,8)
@@ -259,44 +338,66 @@ class GetCityCollegeClasses
       
       if (spantestattrib[0..8] =~ /CS/) 
        #puts spantestattrib[0..8]
-         @collectorarray0[5] = "Computer_Science"
-         @collectorhash0["Department"] = "Computer_Science"
+         @collectorarray00[5] = "Computer_Science"
+         @collectorhash00["Department:"] = "Computer_Science"
+         @collectorhash00_symb[:Department] = "Computer_Science"
         
       end
       
        if (spantestattrib[0..8] =~ /VMD/) 
        #puts spantestattrib[0..8]
-         @collectorarray0[5] = "Visual Media Design"
-         @collectorhash0["Department"] = "Visual Media Design"
+         @collectorarray00[5] = "Visual Media Design"
+         @collectorhash00["Department:"] = "Visual Media Design"
+         @collectorhash00_symb[:Department] = "Visual Media Design"
         
       end
       
        if (spantestattrib[0..8] =~ /CNIT/) 
        #puts spantestattrib[0..8]
-         @collectorarray0[5] = "Computer Networking - Internet Technology"
-         @collectorhash0["Department"] = "Computer Networking - Internet Technology"
+         @collectorarray00[5] = "Computer Networking - Internet Technology"
+         @collectorhash00["Department:"] = "Computer Networking - Internet Technology"
+         @collectorhash00_symb[:Department] = "Computer Networking - Internet Technology"
          
         
       end
       
-    end #of outer if
+      puts "!!collectorarray00 end of span"
+      p @collectorarray00
+      
+      puts "!!collectorhash00 end of span"
+      p @collectorhash00
+      
+      puts "!!collectorhash00_symb end of span"
+      p @collectorhash00_symb
+      
+end #of outer if
       
         
 ################################### 
     
      
      if node.name == "a" and node.attr(:title) == "Class list"
-       
+         
         sectionnumbervar = node.text
+        
+        puts "here is the node.text at beginning of class list title"
+        p node.text
        
-        #@collectorarray = @collectorarray0
-        #@collectorhash = @collectorhash0
-       
-        @collectorarray = @collectorarray0
-        @collectorhash = @collectorhash0
+               
+        if (@collectorarray00[1] != nil and @collectorarray00[6] != nil)
+        @collectorarray = @collectorarray00.dup
+        @collectorhash = @collectorhash00.dup
+        #@collectorhash_symb = Array.new
+        @collectorhash_symb = @collectorhash00_symb.dup
+        
+        puts "!!!Past 2nd condition"
+        p @collectorarry
+      end
+      
        
         @collectorarray[8] = sectionnumbervar
-        @collectorhash["SectionNumber"] = sectionnumbervar
+        @collectorhash["SectionNumber:"] = sectionnumbervar
+        @collectorhash_symb[:SectionNumber] = sectionnumbervar
        
         arecordstring = node
      
@@ -322,13 +423,16 @@ class GetCityCollegeClasses
            #puts "a_rsmvtt has ;"
            @a_arrayinner = a_rsmvtt.split(';')
            @collectorarray[9] = @a_arrayinner[2][10..13]
-           @collectorhash["Section"] = @a_arrayinner[2][10..13]
+           @collectorhash["Section:"] = @a_arrayinner[2][10..13]
+           @collectorhash_symb[:Section] = @a_arrayinner[2][10..13]
            #puts "@a_arrayinner"
            #p @a_arrayinner
            @collectorarray[10] = @a_arrayinner[2][14..23]
-           @collectorhash["Days"] = @a_arrayinner[2][14..23] 
+           @collectorhash["Days:"] = @a_arrayinner[2][14..23] 
+           @collectorhash_symb[:Days] = @a_arrayinner[2][14..23] 
            @collectorarray[11] = @a_arrayinner[2][23..36]
-           @collectorhash["Time"] = @a_arrayinner[2][23..36] 
+           @collectorhash["Time:"] = @a_arrayinner[2][23..36] 
+           @collectorhash_symb[:Time] = @a_arrayinner[2][23..36] 
            #puts "collectorarrayEND"
            #p @collectorarray
            #puts "collectorhashEND"
@@ -355,36 +459,149 @@ class GetCityCollegeClasses
             a_rsmvtt_2 = (@a_recordstringmainvartext).gsub!('%', ';') 
             @a_arrayinner_2 = a_rsmvtt_2.split(';')
             @collectorarray[9] = @a_arrayinner_2[2][10..13]
-            @collectorhash["Section"] = @a_arrayinner_2[2][10..13]
+            @collectorhash["Section:"] = @a_arrayinner_2[2][10..13]
+            @collectorhash_symb[:Section] = @a_arrayinner_2[2][10..13]
             @collectorarray[10] = @a_arrayinner_2[2][14..23]
-            @collectorhash["Days"] = @a_arrayinner_2[2][14..23] 
+            @collectorhash["Days:"] = @a_arrayinner_2[2][14..23] 
+            @collectorhash_symb[:Days] = @a_arrayinner_2[2][14..23] 
             @collectorarray[11] = @a_arrayinner_2[2][23..36]
-            @collectorhash["Time"] = @a_arrayinner_2[2][23..36] 
-            puts "@collectorarray HERE 7"
-            puts @collectorarray
-            puts "@collectorhash HERE 8"
-            p @collectorhash
-            @test = @test + 1
-            puts "a_rsmvtt has NO ;"
-            puts @test
+            @collectorhash[":Time"] = @a_arrayinner_2[2][23..36] 
+            @collectorhash_symb[:Time] = @a_arrayinner_2[2][23..36] 
+            #puts "@collectorarray END V 2"
+            #puts @collectorarray
+            #puts "@collectorhash END V 2"
+            #p @collectorhash
+            #puts "@collectorhash_symb END V 2"
+            #p @collectorhash_symb
+            #@test = @test + 1
+            #puts "a_rsmvtt has NO ;"
+            #puts @test
           end
           
-        puts "@collectorarray HERE 9"
-        p @collectorarray
-        puts "@collectorhasg HERE 10"
-        p @collectorhash
+        ##puts "@collectorarray STILL IN CLASS LIST"
+        ##p @collectorarray
+        ##puts "@collectorhas HERE STILL IN CLASS LIST"
+        ##p @collectorhash
+        ##puts "@collectorhash_synb STILL IN CLASS LIST"
+        ##p @collectorhash_symb
+        ##puts "value of index 1 STILL IN CLASS LIST"
+       # puts @index
+       # @collectionofarrays[@index] = @collectorarray
+       
+       #primes.each do |number|
+       #puts number
+       #end
+       
+        collectorarray = []
+        collectorhash = {}
+        collectorhash_symb = {}
         
-        @collectionofarrays << @collectorarray
-        @collectionofhashes << @collectorhash
+        collectorarray = @collectorarray.dup
+        collectorhash = @collectorhash.dup
+        collectorhash_symb = @collectorhash_symb.dup
         
-        puts "@collectionofarrays"
-        p @collectionofarrays
+       
+        @collectionofarrays.push(collectorarray)
+        @collectionofhashes.push(collectorhash)
+        @collectionofhashes_symb.push(collectorhash_symb)
+        
+        target = File.open('textholding', 'w')
+        target.write("\n")
+        target.write(collectorarray)
+        target.close
+        
+        #puts "@collectionofarrays before clearing"
+        #puts @collectionofarrays
+        #p @collectionsofarray.zip(order).sort_by(&:last).map(&:first)
+        
+        #@collectionofhashes_symb.reverse!
+        
+        #puts @collectionofhashes.inspect
+        
+        #puts @collectionofhashes_symb.inspect
+        
+        @collectorarray.clear
+        @collectorhash.clear
+        @collectorhash_symb.clear
+        
+        #collectorarray = nil
+        #collectorhash = nil
+        #collectorhash_symb = nil
+        
+        #puts "@collectionofarrays after clearing"
+        #puts @collectionofarrays
+       
+       
+        #index = @index
+        #@collectionofarrays[index] = @collectorarray
+        #puts "@collectionofarrays[index] STILL IN CLASS LIST"
+        #p @collectionofarrays[index]
+        #@index = @index + 1
+        #indexprev = @index-3
+        #puts "Previous Index -3"
+        #puts indexprev
+        #puts "collectionofarrays[indexprev] STILL IN CLASS LIST"
+        #p @collectionofarrays[indexprev]
+        #indexprev2 = @index-5
+        #puts "Previous Index -5"
+        #puts indexprev2
+        #puts "collectionofarrays[indexprev2] STILL IN CLASS LIST"
+        #p @collectionofarrays[indexprev2]
+        #indexforward = @index+2
+        #puts "forward index Index +2"
+        #puts indexforward
+        #puts "collectionofarrays[indexforward] STILL IN CLASS LIST"
+        #p @collectionofarrays[indexforward]
+        
+        ###puts "@collectionofarrays all"
+        #p @collectionofarrays
+        #puts  "@collectionofarrays.each { |x| puts x }"
+        #@collectionofarrays.each { |x| puts x }
+        
+        #puts "@collectionofarrays[0@index]"
+        #p @collectionofarrays[@index]
+        puts "value of index  STILL IN CLASS LIST"
+        puts @index
+        @index = @index + 1
+        puts "value of index  AFTER INCREMENT"
+        puts @index
+            #if (@collectionofarrays[0] == nil)  
+        
+            #@collectionofarrays << @collectorarray
+            
+          #end
+        #@collectionofhashes << @collectorhash
+        
+         ###puts "@collectionofarrays[0]"
+        ###p @collectionofarrays[0]
+        
+        #for i in 0..@collectionofarrays.length-1
+         
+          #puts "value of i is"
+          #puts i
+          #puts "printing the elements"
+          #p @collectionofarrays[i]
+        #end
+        
+        #puts "@collectionofarrays"
+        #p @collectionofarrays
         
         
-        p "@collectionofhashes"
-        puts @collectionofhashes
+        #p "@collectionofhashes"
+        #puts @collectionofhashes
         
-    end #of the outer if
+        #@collectorarray = []
+    
+end #of the outer ifnode.name == "a" and node.attr(:title) == "Class list"
+    
+    #for i in 0..@collectionofarrays.length-1
+         
+     #     puts "value of i is"
+      #    puts i
+       #   puts "printing the elements"
+        #  p @collectionofarrays[i]
+        #end
+        
       
         #@collectionofarrays << @collectorarray
         
@@ -397,12 +614,112 @@ class GetCityCollegeClasses
         #puts @collectionofhashes
      
     } #of the each
+    
+     #puts  "@collectionofarrays.each { |x| puts x } OUTSIDE OF THE EACH INSIDE THE METHOD"
+        #@collectionofarrays.each { |x| puts x }
+    
+    ###for i in 0..@collectionofarrays.length-1
+         
+       ###   puts "value of i is"
+          ###puts i
+          ###puts "printing the elements"
+          ###p @collectionofarrays[i]
+        ###end
+        #puts "RETURNING @collectionofhashes_symb"
+        puts "Putting collection of hashers at the end"
+        #p @collectionofhashes_symb
+       return @collectionofhashes_symb
        
+       puts "putting collectorarray, collectorhash, and collectorhash_symb"
+       #p @collectorarray
+       #p @collectorhash
+       p @collectorhash_symb
+       
+      
   end #of the method
+  
+  #puts  "@collectionofarrays.each { |x| puts x } OUTSIDE OF THE METHOD"
+        #@collectionofarrays.each { |x| puts x }
        
 end #of the class
-getccsfinstance = GetCityCollegeClasses.new(" ", " ", " ", " ")
-getccsfinstance.mymain
+
+
+getccsfinstance = GetCityCollegeClasses.new([], {}, {}, [], [])
+outervariable = getccsfinstance.mymain
+
+puts "Puttingoutervariable which is supposed to be @collectionofhashes_sym"
+p outervariable
+
+
+  #testArray1 = ["CCSF","Fall 2014","Undergrad","Computers","Computer_Science","Intro_Java_Script","Tues-Thurs","7:00PM"]
+  #records = ClassData.all(order: :created_at.desc)
+  #erb(:index2, locals: { messages: records })
+#dataRow = ClassData_V2.create(Institution: "CCSF", Semester: "Fall 2014", Level: "Undergrad", Category: "Computers", Department: "Computer_Science", ClassNumber: "CS 101", ClassName: "Intro_Java_Script", SectionNumber: "11111", Section: "501", Days: "Tues-Thurs", Time: "7:00PM", Units: "3")
+outervariable.each do |row|
+dataRow = ClassData_V2.create(row)
+dataRowtest = dataRow
+puts "PUTTING THE DATAROW"
+if dataRow.saved?
+  puts "RECORD SAVED"
+   #redirect("/displayrecords")
+  else
+    
+    puts "NOT SAVED"
+    #erb(:error)
+  end
+
+end
+
+
+#puts "checking for institution in load"
+#dataRowvar = dataRow.Institution
+  
+#p dataRowtest
+
+puts "puttingdataRowtest"
+
+#p dataRowtest
+
+#if dataRow.saved?
+#  puts "RECORD SAVED"
+#   redirect("/displayrecords")
+#  else
+    
+#    puts "NOT SAVED"
+#    #erb(:error)
+#  end
+
+#cd_records = ClassData.all
+#puts "Here are the class data  cd records"
+#p cd_records
+
+
+ci_records = ClassData_V2.all
+ # puts "Here are the ci_records"
+  #p ci_records
+  #body(ci_records[0][0])
+  #puts "Putting records in /"
+  
+  #i = 0
+  #for record in ci_records do
+   #puts i
+   #puts record.Id
+   #puts record.class
+   #puts record.Institution
+   #puts record.Semester
+   #puts record.Level
+   #puts record.Category
+   #puts record.Department
+   #puts record.ClassNumber
+   #puts record.ClassName
+   #puts record.SectionNumber
+   #puts record.Section
+   #puts record.Time
+   #puts record.Days
+   #puts record.Units
+  #end
+redirect("/displayrecords")  
+  #erb(:index2, locals: { messages: records })
 #ca = getccsfinstance.get_collectorarray
 #puts "ca"
 #puts ca
@@ -462,10 +779,24 @@ class Department
     } #of the each
     end #of the method
   end #end of the class
-
+########################################################
   #TestDepartments = Department.new("x", "x")
   #TestDepartments.main()
  # "hello"
+#if dataRow.saved?
+#  puts "RECORD SAVED"
+#   redirect("/displayrecords")
+#  else
+    
+#    puts "NOT SAVED"
+#    erb(:error)
+#  end
+##################################
+##TEMP BLOCK TO DESTROY RECORDS
+#ClassData_V2.destroy
+#Message.destroy
+#Comment.detroy
+
 end #of the do
 ##################################################### 
 #
@@ -485,7 +816,12 @@ end #of the do
 #post("/getProject2") do
 #  get(Project2.rb)
 #end
-
+################################################################################
+get("/displayrecords") do
+  disp_records = ClassData_V2.all(order: :Id.desc)
+  erb(:index_fin3, locals: { displayrecords: disp_records })
+  
+end #of the do 
 ################################################################################# 
 post("/messages/*/comments") do |message_id|
   message = Message.get(message_id)
@@ -497,7 +833,7 @@ post("/messages/*/comments") do |message_id|
     type = rand(3)
     #type = 3
   if (type == 1) 
-    commentTypeVar = "This is a LAME type of Comment and you need to take a CLASS"
+    commentTypeVar = "This is a LAME type of Comment and you need to take a Computer CLASS!"
     comment.commentType = commentTypeVar
     text_Array1 = ["That was not much of a response","You are a troll", "You should be able to think faster than that", "Yeah, Brilliant!", "Yeah Right"]
 
@@ -510,7 +846,7 @@ post("/messages/*/comments") do |message_id|
     
   elsif (type==2)
   
-    commentTypeVar = "This is a GOOD or THOUGHTFUL type of Response"
+    commentTypeVar = "This is a GOOD or THOUGHTFUL type of Response and you should take a Computer CLASS!"
     comment.commentType = commentTypeVar
   
     text_Array2 = ["You are a happy Commenter","Very Thoughtful of You", "Could not have said it better myself", "How did you get so smart", "So True!"]
@@ -524,7 +860,7 @@ post("/messages/*/comments") do |message_id|
     
   else 
   
-    commentTypeVar = "This is a SO SO Comment and you need to take a CLASS"
+    commentTypeVar = "This is a SO SO Comment and you need to take a Computer CLASS"
     comment.commentType = commentTypeVar
     
     text_Array3 = ["Ho Hum", "Tell me about it", "You have a keen grasp of the obvious"]
