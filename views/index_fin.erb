@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ADD A MESSAGE AND FIND MY CLASS</title>
+    <meta charset="UTF-8">
+ 
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <div id="page">
+      <h1>ADD A MESSAGE AND A COMMENT AND THEN <i>FIND MY COMPUTER CLASS</i></h1>
+      <p align="center"><img align="center" height="200" width="250" src="https://lh5.googleusercontent.com/proxy/SdXLjtwB8nhjht5RYFFQIKknJOCJhjRPITUSPC8A0Lun9VoHxJlNKH94KTPdWRPN2P80mh8hRQcbYcVoe84lCQeH6lkxdn6QgIG7N8LaXf___pE9zI3EaiaNJD_mvw=w426-h284"></p>
+      <form id="message-form" method="POST" action="/messages">
+        <textarea id="message-body" name="body" placeholder="Enter a brilliant message here"></textarea>
+        <button type="submit">Post Your Message</button>
+      </form>
+      <% if messages.empty? %>
+        <h2>Sorry, no messages. :(</h2>
+      <% else %>
+        <h2>See Messages and Comments Below</h2>
+        <ol class="message-list">
+          <% messages.each do |message| %>
+            <li>
+              <div class="message-body">
+                <%= message.body %>
+              </div>
+              <div class="message-timestamp">
+                Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
+              </div>
+              <div class="message-comments">
+                <form action="/messages/<%= message.id %>/comments"
+                  method="post">
+                  <textarea name="comment_body"></textarea>
+                  <button type="submit">Add Your Comment</button>
+                </form>
+                <h3>Comments</h3>
+                <% message.comments.each do |comment| %>
+                  <p><%= comment.body %></p>
+                  <div class="comment-response">
+                  <p class="comment-response"><%= comment.responseToComment %></p>
+                  </div>
+                  <div class="comment-type">
+                  <p> <%= comment.commentType %></p>
+                  </div>
+                  <p><img height ="150" width = "150" src="<%= comment.responseImage %>"></p>
+                  <p><img height ="150" width = "250" src="<%= comment.responseImage2 %>"></a></p>
+                   <form id="message-form" method="GET" action="/test">
+        <textarea id="takeAClass" name="body" placeholder="Take a Computer Class!" style="display:none"></textarea>
+        <button type="submit">Take a COMPUTER Class!</button>
+      </form>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ol>
+      <% end %>
+    </div>
+  </body>
+</html>
