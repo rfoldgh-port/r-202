@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FIND MY CLASS!!!</title>
+    <meta charset="UTF-8">
+ 
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <div id="page">
+      <h1>ENTER KEYWORDS TO FIND MY COMPUTER CLASS!</h1>
+      <p align="center"><img align="center" height="200" width="250" src="https://lh5.googleusercontent.com/proxy/SdXLjtwB8nhjht5RYFFQIKknJOCJhjRPITUSPC8A0Lun9VoHxJlNKH94KTPdWRPN2P80mh8hRQcbYcVoe84lCQeH6lkxdn6QgIG7N8LaXf___pE9zI3EaiaNJD_mvw=w426-h284"></p>
+      <form id="message-form" method="POST" action="/classpreferences">
+        <textarea id="message-body" name="body" placeholder="Enter Class Keywords Here - But They Must Be COMPUTERS!"></textarea>
+        <button type="submit">Enter Your Keywords to Find a Computer Class!</button>
+      </form>
+      <% if classpreferences.empty? %>
+        <h2>No Recent Class Keywords Posted. :(</h2>
+      <% else %>
+        <h2>Recent Class Keywords (COMPUTERS)</h2>
+        <ol class="message-list">
+          <% classpreferences.each do |classpreference| %>
+            <li>
+              <div class="message-body">
+                <%= classpreference.body %>
+              </div>
+              <div class="message-timestamp">
+                Posted on <%= classpreference.created_at.strftime("%B %d, %Y at %l:%M%p") %>
+              </div>
+              
+                  
+            <% end %>
+            </div>
+            </li>
+        </ol>
+      <% end %>
+    </div>
+  </body>
+</html>
+ 
