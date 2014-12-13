@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HERE ARE YOUR COMPUTER CLASSES!!!</title>
+    <meta charset="UTF-8">
+ 
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <div id="displaypage">
+      <h1 align="center">HERE ARE YOUR COMPUTER CLASSES!</h1>
+      <% if displayrecords.empty? %>
+        <h2>No Classes Returned(</h2>
+      <% else %>
+        <h2 align="center">COMPUTER CLASSES</h2>
+        <div>
+          <table>
+          <tr class="displayheader0">
+          <td>INSTIT<br>UTION&nbsp</td><td>SEMESTER&nbsp</td><td>LEVEL&nbsp</td>
+          <td>CATEGORY&nbsp</td><td>DEPARTMENT&nbsp</td><td>CLASS<br>NUMBER&nbsp</td>
+          <td>CLASS<br>NAME&nbsp</td><td>SECTION<br>NUM&nbsp</td><td>SECTION&nbsp</td><td>DAYS&nbsp</td>
+          <td>TIME&nbsp</td><td>UNITS&nbsp</td>
+            </tr>
+             <% displayrecords.each do |displayrecord| %> 
+            <tr class="displayclassdata0">
+              <td><%= displayrecord.Institution %>&nbsp</td>
+              <td><%= displayrecord.Semester %>&nbsp</td><td><%= displayrecord.Level %>&nbsp</td>
+              <td><%= displayrecord.Category %>&nbsp</td><td><%= displayrecord.Department %>&nbsp</td>
+              <td><%= displayrecord.ClassNumber %>&nbsp</td><td><%= displayrecord.ClassName %>&nbsp</td>
+              <td><%= displayrecord.SectionNumber %>&nbsp</td><td><%= displayrecord.Section %>&nbsp</td>
+              <td> <%= displayrecord.Days %>&nbsp</td><td> <%= displayrecord.Time %>&nbsp</td>
+              <td> <%= displayrecord.Units %>&nbsp</td>
+              </tr>
+              <% end %>
+          </table>
+          </div>
+      
+        
+              <div class="message-timestamp">
+                
+              </div>
+              <form id="message-form" method="POST" action="/classpreferences">
+        <textarea id="message-body" name="body" placeholder="Enter Class Keywords Here - But They Must Be COMPUTERS!"></textarea>
+        <button type="submit">Enter Your Keywords to Find a Class!</button>
+        </form>
+            </div>
+            </li>
+        </ol>
+      <% end %>
+    </div>
+  </body>
+</html>
+ 
