@@ -1,7 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.6)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     backports (3.6.3)
     bcrypt (3.1.7)
     bcrypt-ruby (3.1.5)
@@ -70,6 +71,7 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     multi_json (1.10.1)
+    public_suffix (4.0.6)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
